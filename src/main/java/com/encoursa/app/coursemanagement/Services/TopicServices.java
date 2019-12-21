@@ -1,7 +1,11 @@
 package com.encoursa.app.coursemanagement.Services;
 
 import com.encoursa.app.coursemanagement.models.Topic;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,33 +24,54 @@ public class TopicServices {
 
         ));
 
+
+    @Value("${course.topic.data.url}")
+    private String topicBaseDataUrl;
+
+
+    @Autowired
+    RestTemplate restTemplate;
+
     public List<Topic> getTopics() {
-        return topics;
+        String url = topicBaseDataUrl + "topics";
+        System.out.println("URL=" + url );
+        ResponseEntity<List> listResponseEntity = restTemplate.getForEntity(url, List.class);
+        return listResponseEntity.getBody();
     }
 
     public Topic getTopic(String id){
-        return topics.stream().filter(t -> t.getId().endsWith(id)).findFirst().get();
+        ResponseEntity<Topic> topicResponseEntity = restTemplate.getForEntity(topicBaseDataUrl + "topic/" + id, Topic.class);
+        return topicResponseEntity.getBody();
     }
 
     public void addTopic(Topic topic) {
-        topics.add(topic);
+
+        ResponseEntity<ResponseEntity> responseEntityResponseEntity = restTemplate.postForEntity(topicBaseDataUrl + "topics", topic, ResponseEntity.class);
+        if(responseEntityResponseEntity.getStatusCode().is2xxSuccessful()){
+            System.out.println("Successfully added " + topic.toString()) ;
+        }else{
+            System.out.println("Failed insertion") ;
+        }
     }
 
     public void updateTopic(String id,Topic topic) {
-        Topic topicUpdatable = getTopic(id);
-        if(topicUpdatable != null ){
-            topicUpdatable.setName(topic.getName());
-            topicUpdatable.setDescriptions(topic.getDescriptions());
+        ResponseEntity<ResponseEntity> responseEntityResponseEntity = restTemplate.postForEntity(topicBaseDataUrl + "topics", topic, ResponseEntity.class);
+        if(responseEntityResponseEntity.getStatusCode().is2xxSuccessful()){
+            System.out.println("Successfully updated " + topic.toString()) ;
         }else{
-            addTopic(topic);
+            System.out.println("Failed to update") ;
         }
     }
 
     public void deletTopic(String id) {
+        restTemplate.delete(topicBaseDataUrl + "topic/" + id);
+    }
 
-        Topic topicUpdatable = getTopic(id);
-        if(topicUpdatable != null ){
-            getTopics().remove(topicUpdatable);
-        }
+    public String getTopicBaseDataUrl() {
+        return topicBaseDataUrl;
+    }
+
+    public void setTopicBaseDataUrl(String topicBaseDataUrl) {
+        this.topicBaseDataUrl = topicBaseDataUrl;
     }
 }

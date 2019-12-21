@@ -6,13 +6,13 @@ import com.encoursa.app.coursemanagement.models.Topic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @RestController
 @RequestMapping("/CoursesTopic")
 public class TopicController {
+
+
 
     @Autowired
     private TopicServices topicServices;
@@ -42,4 +42,6 @@ public class TopicController {
     public void deletTopic(@PathVariable String id){
         topicServices.deletTopic(id);
     }
+
+
 }

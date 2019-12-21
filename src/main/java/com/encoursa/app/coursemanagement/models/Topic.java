@@ -2,15 +2,16 @@ package com.encoursa.app.coursemanagement.models;
 
 public class Topic {
 
+
     private String id;
     private String name;
-    private String descriptions;
+    private String description;
 
 
     public Topic(String id, String name, String descriptions) {
         this.id = id;
         this.name = name;
-        this.descriptions = descriptions;
+        this.description = descriptions;
     }
 
     public String getId() {
@@ -29,11 +30,20 @@ public class Topic {
         this.name = name;
     }
 
-    public String getDescriptions() {
-        return descriptions;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDescriptions(String descriptions) {
-        this.descriptions = descriptions;
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    @Override
+    public String toString() {
+        return "Topic{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                '}';
     }
 }
